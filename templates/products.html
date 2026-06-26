@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Products</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-light">
+    <div class="container mt-4">
+      <h2 class="text-center mb-4">Available Products</h2>
+
+      <div class="row">
+        {% for product in products %}
+
+        <div class="col-md-4 mb-4">
+          <div class="card shadow h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+
+              <h6 class="text-primary">₹ {{ product.price }}</h6>
+
+              <p>
+                <b>Brand :</b>
+
+                {{ product.brand }}
+              </p>
+
+              <p>
+                <b>Category :</b>
+
+                {{ product.category }}
+              </p>
+
+              <p>{{ product.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -139,13 +139,17 @@ def logout():
 @app.route("/products")
 def products():
 
-    if "user_id" not in session:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
 
-        flash("Please Login First.", "warning")
+    cursor.execute("SELECT * FROM products")
 
-        return redirect(url_for("login"))
+    products = cursor.fetchall()
 
-    return "<h1>Products Page Coming in Step 7</h1>"
+    cursor.close()
+    conn.close()
+
+    return render_template("products.html", products=products)
 
 
 if __name__ == "__main__":
