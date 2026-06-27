@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from Database import get_db_connection
 from Recommendation import get_recommendations
+from collaborative_filtering import get_collaborative_recommendations
 
 app = Flask(__name__)
 app.secret_key = "mca_project_2026"
@@ -125,6 +126,27 @@ def dashboard():
         "dashboard.html",
 
         username=session["username"]
+
+    )
+    
+@app.route("/recommendations")
+def recommendations():
+
+    if "user_id" not in session:
+
+        flash("Please login first!", "warning")
+
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    recommended = get_collaborative_recommendations(user_id)
+
+    return render_template(
+
+        "recommendations.html",
+
+        products=recommended.to_dict(orient="records")
 
     )
     

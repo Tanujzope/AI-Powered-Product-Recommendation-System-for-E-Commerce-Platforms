@@ -116,15 +116,15 @@ def get_collaborative_recommendations(user_id, top_n=5):
 
 # print(get_similar_users(1))
 
-print()
+# print()
 
-recommended = get_collaborative_recommendations(1)
+# recommended = get_collaborative_recommendations(1)
 
-print(recommended[
-    [
-        "product_id",
-        "name",
-        "brand",
-        "category"
-    ]
-])
+# print(recommended[
+#     [
+#         "product_id",
+#         "name",
+#         "brand",
+#         "category"
+#     ]
+# ])
