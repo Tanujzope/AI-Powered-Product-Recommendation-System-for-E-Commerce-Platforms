@@ -16,6 +16,20 @@
 
   <body class="bg-light">
     <div class="container mt-5">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+
+      <div class="alert alert-{{ category }} alert-dismissible fade show">
+        {{ message }}
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      {% endfor %} {% endif %} {% endwith %}
       <h2 class="text-center mb-4">⭐ Recommended For You</h2>
 
       <div class="row">
@@ -42,12 +56,37 @@
 
               <p>{{ product.description }}</p>
 
-              <a
-                href="/product/{{ product.product_id }}"
-                class="btn btn-primary w-100"
-              >
-                View Details
-              </a>
+              <div class="d-grid gap-2">
+                <form action="/feedback" method="POST">
+                  <input
+                    type="hidden"
+                    name="product_id"
+                    value="{{ product.product_id }}"
+                  />
+
+                  <input type="hidden" name="feedback_type" value="like" />
+
+                  <button class="btn btn-success w-100">👍 Like</button>
+                </form>
+
+                <form action="/feedback" method="POST">
+                  <input
+                    type="hidden"
+                    name="product_id"
+                    value="{{ product.product_id }}"
+                  />
+
+                  <input
+                    type="hidden"
+                    name="feedback_type"
+                    value="not_interested"
+                  />
+
+                  <button class="btn btn-danger w-100">
+                    👎 Not Interested
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -59,5 +98,7 @@
         <a href="/dashboard" class="btn btn-secondary"> Back to Dashboard </a>
       </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

@@ -150,6 +150,94 @@ def recommendations():
 
     )
     
+@app.route("/feedback", methods=["POST"])
+def feedback():
+
+    if "user_id" not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+    product_id = request.form["product_id"]
+    feedback_type = request.form["feedback_type"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor(buffered=True)
+
+    # Check if feedback already exists
+    cursor.execute(
+        """
+        SELECT feedback_id, feedback_type
+        FROM feedback
+        WHERE user_id = %s AND product_id = %s
+        """,
+        (user_id, product_id)
+    )
+
+    existing_feedback = cursor.fetchone()
+
+    if existing_feedback:
+
+        feedback_id = existing_feedback[0]
+        old_feedback = existing_feedback[1]
+
+        # Same feedback already exists
+        if old_feedback == feedback_type:
+
+            cursor.close()
+            conn.close()
+
+            flash(
+                "You have already submitted this feedback.",
+                "warning"
+            )
+
+            return redirect(url_for("recommendations"))
+
+        # Update feedback
+        cursor.execute(
+            """
+            UPDATE feedback
+            SET feedback_type = %s
+            WHERE feedback_id = %s
+            """,
+            (feedback_type, feedback_id)
+        )
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        flash(
+            "Your feedback has been updated.",
+            "success"
+        )
+
+        return redirect(url_for("recommendations"))
+
+    # Insert new feedback
+    cursor.execute(
+        """
+        INSERT INTO feedback
+        (user_id, product_id, feedback_type)
+        VALUES (%s, %s, %s)
+        """,
+        (user_id, product_id, feedback_type)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash(
+        "Thank you for your feedback!",
+        "success"
+    )
+
+    return redirect(url_for("recommendations"))
+    
 @app.route("/logout")
 def logout():
 
