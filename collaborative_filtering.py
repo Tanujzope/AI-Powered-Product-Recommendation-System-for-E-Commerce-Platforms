@@ -101,6 +101,90 @@ def get_collaborative_recommendations(user_id, top_n=5):
         conn,
         params=list(recommended_products)
     )
+    
+    # Remove products marked as "not_interested"
+    feedback_query = """
+    SELECT product_id
+    FROM feedback
+    WHERE user_id = %s
+    AND feedback_type = 'not_interested'
+    """
+
+    not_interested = pd.read_sql(
+        feedback_query,
+        conn,
+        params=(user_id,)
+    )
+
+    if not not_interested.empty:
+
+        products = products[
+        ~products["product_id"].isin(
+            not_interested["product_id"]
+        )
+    ]
+        
+    # If no recommendations remain after filtering,
+# show random products that are not marked as "not_interested"
+
+    if products.empty:
+
+        query = """
+        SELECT *
+        FROM products
+        WHERE product_id NOT IN (
+
+        SELECT product_id
+        FROM feedback
+        WHERE user_id = %s
+        AND feedback_type = 'not_interested'
+
+        )
+        ORDER BY RAND()
+        LIMIT %s
+        """
+
+    products = pd.read_sql(
+        query,
+        conn,
+        params=(user_id, top_n)
+    )
+    
+    # Get products liked by the current user
+    liked_query = """
+    SELECT p.category, p.brand
+    FROM feedback f
+    JOIN products p
+    ON f.product_id = p.product_id
+    WHERE f.user_id = %s
+    AND f.feedback_type = 'like'
+    """
+
+    liked_products = pd.read_sql(
+    liked_query,
+    conn,
+    params=(user_id,)
+    )
+    
+    if not liked_products.empty:
+
+        liked_categories = liked_products["category"].unique()
+        liked_brands = liked_products["brand"].unique()
+
+    products["priority"] = products.apply(
+    lambda row:
+        3 +                                   # Collaborative score
+        (2 if row["brand"] in liked_brands else 0) +
+        (1 if row["category"] in liked_categories else 0),
+    axis=1
+)
+
+    products = products.sort_values(
+        by="priority",
+        ascending=False
+    )
+
+    products = products.drop(columns=["priority"])
 
     conn.close()
 
