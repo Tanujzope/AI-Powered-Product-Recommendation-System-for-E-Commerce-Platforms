@@ -113,18 +113,6 @@ http://127.0.0.1:5000
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots of:
-
-- Login Page
-- Registration Page
-- Dashboard
-- Product Details
-- Recommendation Page
-- Feedback Module
-
----
 
 ## 🎯 Future Scope
 
