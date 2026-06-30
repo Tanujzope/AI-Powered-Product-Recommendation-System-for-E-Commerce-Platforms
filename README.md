@@ -82,13 +82,13 @@ Combines Content-Based Filtering and Collaborative Filtering with user feedback 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/AI-Based-Product-Recommendation-System.git
+git clone https://github.com/Tanujzope/AI-Powered-Product-Recommendation-System-for-E-Commerce-Platforms.git
 ```
 
 2. Navigate to the project folder
 
 ```bash
-cd AI-Based-Product-Recommendation-System
+cd AI-Powered-Product-Recommendation-System-for-E-Commerce-Platforms
 ```
 
 3. Install dependencies
